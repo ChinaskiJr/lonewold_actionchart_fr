@@ -13,70 +13,95 @@
 #include <wchar.h>
 
 #include "../headers/actionChart.h"
-
-char         *choices[] = {
-    "Commencer une nouvelle feuille d'aventure",
-    "Charger une feuille d'aventure",
-    "Quitter le programme",
-};
-
-void display_menu(WINDOW *menuWindow, int highlight);
+#include "../headers/menu.h"
 
 int main(void) {
 
-    int             n_choices = sizeof(choices) / sizeof (char *);
+    //set UTF-8 THEN initiate ncurses
+    setlocale(LC_ALL, "");
+    initscr();
+
     int             highlight = 1;
     int             choice = 0;
     int             wgetChoice = 0;
     int             goOn = 1;
+    int             xBloc = COLS / 20;
+    int             yBloc = LINES / 11;
 
     WINDOW          *titleWindow = NULL;
     WINDOW          *menuWindow = NULL;
     WINDOW          *actionChartWindow = NULL;
 
+    WINDOW          *logoWindow = NULL;
     char            title[] = "Feuille d'aventure Loup Solitaire";
-    char            credits[] = "Cr\u00E9\u00E9 par ChinaskiJr - Licence CC - v0.01";
+    char            credits[] = "Cr\u00E9\u00E9 par ChinaskiJr - Licence CC - v0.03";
+    
+    char *logo[] = {
+         " _                        ____        _ _ _        _          ",
+         "| |    ___  _   _ _ __   / ___|  ___ | (_) |_ __ _(_)_ __ ___ ",
+         "| |   / _ \\| | | | '_ \\  \\___ \\ / _ \\| | | __/ _` | | '__/ _ \\",
+         "| |__| (_) | |_| | |_) |  ___) | (_) | | | || (_| | | | |  __/",
+         "|_____\\___/ \\__,_| .__/  |____/ \\___/|_|_|\\__\\__,_|_|_|  \\___|",
+         "                 |_|                                          ",
+    };
+    int sizeLogoArray = sizeof(logo) / sizeof(char *);
+    int xLogo = (COLS / 2) - (strlen(logo[0]) / 2);
+    int yLogo = 7;
 
-    //set UTF-8 THEN initiate ncurses
-    setlocale(LC_ALL, "");
-    initscr();
+    char *choices[] = {
+        "1 - Commencer une nouvelle feuille d'aventure",
+        "2 - Charger une feuille d'aventure",
+        "3 - Quitter le programme",
+    };
+    int numberChoices = sizeof(choices) / sizeof(char *);
+    int xChoices = COLS / 2 - strlen(choices[0]) / 2;
+    int yChoices = 20;
     
 
-    // always loop for dynamic size
+    // Always loop for dynamic size
     while(goOn) {
+        // Actualize the COLS or LINES depedences variables 
+        xBloc = COLS / 20;
+        yBloc = LINES / 5;
+        xLogo = (COLS / 2) - (strlen(logo[0]) / 2);
+        xChoices = COLS / 2 - strlen(choices[0]) / 2;
+
         // Display line buffering
         noecho();
         cbreak();
         clear();
+
         // Set the windows
-        titleWindow = subwin(stdscr, LINES / 9, COLS, 0, 0);
+        titleWindow = subwin(stdscr, yBloc, COLS, 0, 0);
         box(titleWindow, ACS_VLINE, ACS_HLINE);
-        menuWindow = subwin(stdscr, LINES - (LINES / 9), COLS, LINES / 9, 0);
+        menuWindow = subwin(stdscr, yBloc * 4, COLS, LINES / 5, 0);
         box(menuWindow, ACS_VLINE, ACS_HLINE);
-        // Display the wchar_t
+
+        // Display the texts (no logo & no menu)
         wattron(titleWindow, A_BOLD);
-        mvwprintw(titleWindow, 1, COLS / 2 - strlen(title) / 2, title);
+        mvwprintw(titleWindow, xBloc / 2, COLS / 2 - strlen(title) / 2, title);
         wattroff(titleWindow, A_BOLD);
         wattron(menuWindow, A_DIM);
-        mvwprintw(menuWindow, LINES - (LINES / 6), COLS / 2 - strlen(credits) / 2, credits);
+        mvwprintw(menuWindow, 3.8 * yBloc, COLS / 2 - strlen(credits) / 2, credits);
         wattroff(menuWindow, A_DIM);
-        refresh();
-        // Display the menu
-        display_menu(menuWindow, highlight);
 
+        // display arrays
+        refresh();
+        display_logo(menuWindow, logo, xLogo, yLogo, sizeLogoArray);
+        display_main_menu(menuWindow, highlight, choices, xChoices, yChoices, numberChoices);
         keypad(menuWindow, TRUE);
 
-        // Highlight selector
+        // Highlight selector for choices[]
         wgetChoice = wgetch(menuWindow);
         switch(wgetChoice) {
             case KEY_UP:
                 if(highlight == 1)
-                    highlight = n_choices;
+                    highlight = numberChoices;
                 else
                     highlight--;
             break;
             case KEY_DOWN:
-                if(highlight == n_choices)
+                if(highlight == numberChoices)
                     highlight = 1;
                 else
                     highlight++;
@@ -85,7 +110,8 @@ int main(void) {
                 choice = highlight;
             break;
         }
-        display_menu(menuWindow, highlight);
+        display_main_menu(menuWindow, highlight, choices, xChoices, yChoices, numberChoices);
+        refresh();
 
         // Lead the way
         if (choice == 3) {
@@ -106,23 +132,3 @@ int main(void) {
     return 0;
 }
 
-void display_menu(WINDOW *menuWindow, int highlight)
-{
-    int x, y;    
-    int i = 0;
-    y = 2;
-    int n_choices = sizeof(choices) / sizeof (char *);
-    box(menuWindow, 0, 0);
-    for(i = 0; i < n_choices; ++i) {
-       x = COLS / 2 - strlen(choices[i]) / 2;
-       if(highlight == i + 1) {
-            wattron(menuWindow, A_REVERSE); 
-            mvwprintw(menuWindow, y, x, "%s", choices[i]);
-            wattroff(menuWindow, A_REVERSE);
-        }
-        else
-            mvwprintw(menuWindow, y, x, "%s", choices[i]);
-        y += 2;
-    }
-    wrefresh(menuWindow);
-}
