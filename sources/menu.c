@@ -42,7 +42,7 @@ void display_main_menu(WINDOW *menuWindow, int highlight, char *menuToDisplay[],
 void display_menu_actionChart(WINDOW *actionChartWindow, int highlight, char *actionChartMenu[], int y, int x, int category) {
 
     wattron(actionChartWindow, A_BOLD);
-    if (highlight == category + 1) {
+    if (highlight == category) {
         wattron(actionChartWindow, A_REVERSE); 
         mvwprintw(actionChartWindow, y, x, "%s", actionChartMenu[category]);
         wattroff(actionChartWindow, A_REVERSE);
@@ -51,3 +51,4 @@ void display_menu_actionChart(WINDOW *actionChartWindow, int highlight, char *ac
     }
     wattroff(actionChartWindow, A_BOLD);
 }
+

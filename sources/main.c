@@ -20,13 +20,13 @@ int main(void) {
     //set UTF-8 THEN initiate ncurses
     setlocale(LC_ALL, "");
     initscr();
-
+    
     int             highlight = 1;
     int             choice = 0;
     int             wgetChoice = 0;
     int             goOn = 1;
-    int             xBloc = COLS / 20;
-    int             yBloc = LINES / 11;
+    int             xBloc = COLS / 24;
+    int             yBloc = LINES / 12;
 
     WINDOW          *titleWindow = NULL;
     WINDOW          *menuWindow = NULL;
@@ -89,9 +89,9 @@ int main(void) {
         refresh();
         display_logo(menuWindow, logo, xLogo, yLogo, sizeLogoArray);
         display_main_menu(menuWindow, highlight, choices, xChoices, yChoices, numberChoices);
-        keypad(menuWindow, TRUE);
 
         // Highlight selector for choices[]
+        keypad(menuWindow, TRUE);
         wgetChoice = wgetch(menuWindow);
         switch(wgetChoice) {
             case KEY_UP:

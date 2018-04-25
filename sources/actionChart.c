@@ -14,12 +14,13 @@
 #include "../headers/menu.h"
 #include "../headers/constants.h"
 
+
 void actionChart(WINDOW *actionChartWindow) {
 
     int         goOn = 1;
     int         wgetChoice = 0;
     int         i = 0;
-    int         highlight = 1;
+    int         highlight = 0;
 
     WINDOW      *titleWindow = NULL;
     WINDOW      *kaiDisciplinesWindow = NULL;
@@ -39,51 +40,70 @@ void actionChart(WINDOW *actionChartWindow) {
         "Points d'endurance",
         "Points d'Habilet\u00E9",
         "Sac \u00E0 Dos",
-        "Pi\u00E8ces d'or",
+        "Couronnes",
         "Repas",
         "Objets sp\u00E9ciaux",
     };
+    int numberChoices = sizeof(actionChartMenu) / sizeof(char *);
 
 
     while (goOn) {
 
         refresh();
+        // define blocs
+        int         xBloc = COLS / 24;
+        int         yBloc = LINES / 12;
 
-        // blocs places
-        int         xBloc = COLS / 20;
-        int         yBloc = LINES / 11;
+        // Windows size
         int         xSizeTitle = 6 * xBloc;
         int         ySizeTitle = yBloc / 2;
-        int         xSizeDisciplines = 5 * xBloc;
+        int         xSizeDisciplines = 6 * xBloc;
         int         ySizeDisciplines = 10 * yBloc;
-        int         xSizeEndurance = 2 * xBloc;
-        int         ySizeEndurance = 1 * yBloc;
-        int         xSizeCombatSkill = 2 * xBloc;
-        int         ySizeCombatSkill = 1 * yBloc;
+        int         xSizeEndurance = 3 * xBloc;
+        int         ySizeEndurance = 1.5 * yBloc;
+        int         xSizeCombatSkill = 3 * xBloc;
+        int         ySizeCombatSkill = 1.5 * yBloc;
         int         xSizeBackpack = 3 * xBloc;
         int         ySizeBackpack = 8 * yBloc;
-        int         xSizeGold = 2 * xBloc;
-        int         ySizeGold = 1 * yBloc;
-        int         xSizeMeal = 2 * xBloc;
-        int         ySizeMeal = 1 * yBloc;
-        int         xSizeSpecialItems = 4 * xBloc;
+        int         xSizeGold = 3 * xBloc;
+        int         ySizeGold = 1.5 * yBloc;
+        int         xSizeMeal = 3 * xBloc;
+        int         ySizeMeal = 1.5 * yBloc;
+        int         xSizeSpecialItems = 8 * xBloc;
         int         ySizeSpecialItems = 10 * yBloc;
 
-        //titles places
-        int         xTitleDisciplines = xBloc * 3.75;
-        int         yTitleDisciplines = yBloc * 1.75;
-        int         xTitleEndurance = xBloc * 9.4;
-        int         yTitleEndurance = yBloc * 1.75;
-        int         xTitleCombatSkill = xBloc * 12.9;
-        int         yTitleCombatSkill = yBloc * 1.75;
-        int         xTitleBackpack = xBloc * 9.9;
-        int         yTitleBackpack = yBloc * 3.75;
-        int         xTitleGold = xBloc * 13.3;
-        int         yTitleGold = yBloc * 3.75;
-        int         xTitleMeal =xBloc * 13.7;
-        int         yTitleMeal = yBloc * 5.75;
-        int         xTitleSpecialItems = xBloc * 17;
-        int         yTitleSpecialItems = yBloc * 1.75;
+        // Windows position
+        int         xPositionDisciplines = xBloc * 2;
+        int         yPositionDisciplines = yBloc * 2;
+        int         xPositionEndurance = xBloc * 9;
+        int         yPositionEndurance = yBloc * 2;
+        int         xPositionCombatSkill = xBloc * 13;
+        int         yPositionCombatSkill = yBloc * 2;
+        int         xPositionBackpack = xBloc * 9;
+        int         yPositionBackpack = yBloc * 4;
+        int         xPositionGold = xBloc * 13;
+        int         yPositionGold = yBloc * 4;
+        int         xPositionMeal = xBloc * 13;
+        int         yPositionMeal = yBloc * 6;
+        int         xPositionSpecialItems = xBloc * 17;
+        int         yPositionSpecialItems = yBloc * 2;
+
+
+        // Titles position (+1 because of strlen that count \u for 2)
+        float       xTitleDisciplines = (xSizeDisciplines / 2) - (strlen(actionChartMenu[DISC]) / 2) + xPositionDisciplines + 1;
+        float       yTitleDisciplines = yPositionDisciplines - 0.25;
+        float       xTitleEndurance = (xSizeEndurance / 2) - (strlen(actionChartMenu[PE]) / 2) + xPositionEndurance;
+        float       yTitleEndurance = yPositionEndurance - 0.25;
+        float       xTitleCombatSkill = (xSizeCombatSkill / 2) - (strlen(actionChartMenu[CS]) / 2) + xPositionCombatSkill + 1;
+        float       yTitleCombatSkill = yPositionCombatSkill - 0.25;
+        float       xTitleBackpack = (xSizeBackpack / 2) - (strlen(actionChartMenu[BACKPACK]) / 2) + xPositionBackpack + 1;
+        float       yTitleBackpack = yPositionBackpack - 0.25;
+        float       xTitleGold = (xSizeGold / 2) - (strlen(actionChartMenu[GOLD]) / 2) + xPositionGold;
+        float       yTitleGold = yPositionGold - 0.25;
+        float       xTitleMeal = (xSizeMeal / 2) - (strlen(actionChartMenu[MEAL]) / 2) + xPositionMeal;
+        float       yTitleMeal = yPositionMeal - 0.25;
+        float       xTitleSpecialItems = (xSizeSpecialItems / 2) - (strlen(actionChartMenu[SPECITS]) / 2) + xPositionSpecialItems + 1;
+        float       yTitleSpecialItems = yPositionSpecialItems - 0.25;
 
         // Display line buffering
         noecho();
@@ -102,57 +122,124 @@ void actionChart(WINDOW *actionChartWindow) {
 
         //Windows and sub-windows
         wattron(actionChartWindow, A_BOLD);
-        kaiDisciplinesWindow = subwin(actionChartWindow, ySizeDisciplines, xSizeDisciplines, yBloc * 2, xBloc * 2);
+        kaiDisciplinesWindow = subwin(actionChartWindow, ySizeDisciplines, xSizeDisciplines, yPositionDisciplines, xPositionDisciplines);
         for (i = 0 ; i < 10 ; i++) {
-            kaiDisciplineWindows[i] = subwin(kaiDisciplinesWindow, yBloc, xSizeDisciplines, yBloc * 2 + (yBloc * i), xBloc * 2);
+            kaiDisciplineWindows[i] = subwin(kaiDisciplinesWindow, yBloc, xSizeDisciplines, yPositionDisciplines + (yBloc * i), xPositionDisciplines);
             box(kaiDisciplineWindows[i], ACS_VLINE, ACS_HLINE);
         }
         // UNCOMMENT NEXT LINE FOR GRAPHIC DESIGN : BORDERS OF KAI DISCIPLINES
         //box(kaiDisciplinesWindow, ACS_VLINE, ACS_HLINE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleDisciplines, xTitleDisciplines, DISC);
 
-        countEndurantWindow = subwin(actionChartWindow, ySizeEndurance, xSizeEndurance, yBloc * 2, xBloc * 9.5);
+        countEndurantWindow = subwin(actionChartWindow, ySizeEndurance, xSizeEndurance, yPositionEndurance, xPositionEndurance);
         box(countEndurantWindow, ACS_VLINE, ACS_HLINE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleEndurance, xTitleEndurance, PE);
 
-        combatSkillWindow = subwin(actionChartWindow, ySizeCombatSkill, xSizeCombatSkill, yBloc * 2, xBloc * 13);
+        combatSkillWindow = subwin(actionChartWindow, ySizeCombatSkill, xSizeCombatSkill, yPositionCombatSkill, xPositionCombatSkill);
         box(combatSkillWindow, ACS_VLINE, ACS_HLINE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleCombatSkill, xTitleCombatSkill, CS);
 
-        backpackWindow = subwin(actionChartWindow, ySizeBackpack, xSizeBackpack, yBloc * 4, xBloc * 9);
+        backpackWindow = subwin(actionChartWindow, ySizeBackpack, xSizeBackpack, yPositionBackpack, xPositionBackpack);
         for (i = 0 ; i < 8 ; i++) {
-            backpackWindows[i] = subwin(backpackWindow, yBloc, xSizeBackpack, yBloc * 4 + (yBloc * i), xBloc * 9);
+            backpackWindows[i] = subwin(backpackWindow, yBloc, xSizeBackpack, yPositionBackpack + (yBloc * i), xPositionBackpack);
             box(backpackWindows[i], ACS_VLINE, ACS_HLINE);
         }
         // UNCOMMENT NEXT LINE FOR GRAPHIC DESIGN : BORDERS OF BACKPACK
         //box(backpackWindow, ACS_VLINE, ACS_HLINE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleBackpack, xTitleBackpack, BACKPACK);
 
-        goldWindow = subwin(actionChartWindow, ySizeGold, xSizeGold, yBloc * 4, xBloc * 13);
+        goldWindow = subwin(actionChartWindow, ySizeGold, xSizeGold, yPositionGold, xPositionGold);
         box(goldWindow, ACS_VLINE, ACS_HLINE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleGold, xTitleGold, GOLD);
 
-        mealWindow = subwin(actionChartWindow, ySizeMeal, xSizeMeal, yBloc * 6, xBloc * 13);
+        mealWindow = subwin(actionChartWindow, ySizeMeal, xSizeMeal, yPositionMeal, xPositionMeal);
         box(mealWindow, ACS_VLINE, ACS_HLINE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleMeal, xTitleMeal, MEAL);
 
-        specialItemsWindow = subwin(actionChartWindow, ySizeSpecialItems, xSizeSpecialItems, yBloc * 2, xBloc * 16);
+        specialItemsWindow = subwin(actionChartWindow, ySizeSpecialItems, xSizeSpecialItems, yPositionSpecialItems, xPositionSpecialItems);
         box(specialItemsWindow, ACS_VLINE, ACS_HLINE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleSpecialItems, xTitleSpecialItems, SPECITS);
 
         wattroff(actionChartWindow, A_BOLD);
 
-        mvwprintw(actionChartWindow, yBloc * 13, xBloc * 2, "Options :\t q : quitter\t s : sauvegarder\t l : charger\t b : s\u00E9lectionner le livre\td : table de hasard\tf : combat");
+
+        char options[] = "Options :\t q : quitter\t s : sauvegarder\t l : charger\t b : s\u00E9lectionner le livre\td : table de hasard\tf : combat";
+        // The - 12 on ySize is for the 6 \t in options[]
+        mvwprintw(actionChartWindow, yBloc * 13, (COLS / 2) - (strlen(options) / 2) - 12, options);
 
         refresh();
         keypad(actionChartWindow, TRUE);
-
         wgetChoice = wgetch(actionChartWindow);
         switch (wgetChoice) {
+            // First, the navigation
+            case KEY_UP:
+                if (highlight == BACKPACK) {
+                    highlight = PE;
+                } else if (highlight == GOLD) {
+                    highlight = CS;
+                } else if (highlight == MEAL) {
+                    highlight = GOLD;
+                }
+                    
+            break;
+
+            case KEY_DOWN:
+                if (highlight == PE) {
+                    highlight = BACKPACK;
+                } else if (highlight == CS) {
+                    highlight = GOLD;
+                } else if (highlight == GOLD) {
+                    highlight = MEAL;
+                }
+            break;
+
+            case KEY_LEFT:
+                if (highlight == SPECITS) {
+                    highlight = CS;
+                } else if (highlight == CS) {
+                    highlight = PE;
+                } else if (highlight == PE) {
+                    highlight = DISC;
+                } else if (highlight == GOLD) {
+                    highlight = BACKPACK;
+                } else if (highlight == MEAL) {
+                    highlight = BACKPACK;
+                } else if (highlight == BACKPACK) {
+                    highlight = DISC;
+                }
+            break;
+
+            case KEY_RIGHT:
+                if (highlight == DISC) {
+                    highlight = PE;
+                } else if (highlight == PE) {
+                    highlight = CS;
+                } else if (highlight == CS) {
+                    highlight = SPECITS;
+                } else if (highlight == BACKPACK) {
+                    highlight = GOLD;
+                } else if (highlight == GOLD) {
+                    highlight == SPECITS;
+                } else if (highlight == MEAL) {
+                    highlight = SPECITS;
+                }
+            break;
+
+            display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleDisciplines, xTitleDisciplines, DISC);
+
+                
+            //Then the options
             case 113:
                 goOn = 0;
             break;
         }
+        display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleEndurance, xTitleEndurance, PE);
+        display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleCombatSkill, xTitleCombatSkill, CS);
+        display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleBackpack, xTitleBackpack, BACKPACK);
+        display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleGold, xTitleGold, GOLD);
+        display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleMeal, xTitleMeal, MEAL);
+        display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleSpecialItems, xTitleSpecialItems, SPECITS);
+        refresh();
     }
     refresh();
     delwin(titleWindow);
