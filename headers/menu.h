@@ -12,10 +12,10 @@
 // Display a ASCII logo
 void display_logo(WINDOW *window, char *logoToDisplay[], int x, int y, int size);
 
-// Display and deal with the highlight selection of the main menu
+// Display the main menu
 void display_main_menu(WINDOW *menuWindow, int highlight, char *menuToDisplay[], int x, int y, int n_choices);
 
-
+// Display the selection in actionChart
 void display_menu_actionChart(WINDOW *actionChartWindow, int highlight, char *menu_actionChart[], int x, int y, int n_choices);
 
 #endif

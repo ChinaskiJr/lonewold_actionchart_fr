@@ -15,11 +15,12 @@
 #include "../headers/actionChart.h"
 #include "../headers/menu.h"
 
-int main(void) {
+int main(int argc, char *argv[]) {
 
     //set UTF-8 THEN initiate ncurses
     setlocale(LC_ALL, "");
     initscr();
+    start_color();
     
     int             highlight = 1;
     int             choice = 0;

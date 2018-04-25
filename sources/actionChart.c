@@ -13,7 +13,7 @@
 
 #include "../headers/menu.h"
 #include "../headers/constants.h"
-
+#include "../headers/books.h"
 
 void actionChart(WINDOW *actionChartWindow) {
 
@@ -21,6 +21,7 @@ void actionChart(WINDOW *actionChartWindow) {
     int         wgetChoice = 0;
     int         i = 0;
     int         highlight = 0;
+    int         book = 0;
 
     WINDOW      *titleWindow = NULL;
     WINDOW      *kaiDisciplinesWindow = NULL;
@@ -46,16 +47,24 @@ void actionChart(WINDOW *actionChartWindow) {
     };
     int numberChoices = sizeof(actionChartMenu) / sizeof(char *);
 
+    char title[] = "Feuille d'Aventure";
+
+    char *books[] = {
+        "Tome 1 - Les ma\u00EEtre des t\u00E9n\u00E8bres",
+        "Tome 2 - La travers\u00E9e infernale",
+        "Tome 3 - Les grottes de Kalte",
+        "tome 4 - Le gouffre maudit",
+        "tome 5 - Le tyran du d\u00E8sert",
+    };
 
     while (goOn) {
-
         refresh();
         // define blocs
         int         xBloc = COLS / 24;
         int         yBloc = LINES / 12;
 
         // Windows size
-        int         xSizeTitle = 6 * xBloc;
+        int         xSizeTitle = 12 * xBloc;
         int         ySizeTitle = yBloc / 2;
         int         xSizeDisciplines = 6 * xBloc;
         int         ySizeDisciplines = 10 * yBloc;
@@ -109,18 +118,21 @@ void actionChart(WINDOW *actionChartWindow) {
         noecho();
         cbreak();
         clear();
-
+        // Main window
         actionChartWindow = subwin(stdscr, LINES, COLS, 0, 0);
         box(actionChartWindow, ACS_VLINE, ACS_HLINE);
-
-        // Title
-        char title[] = "Feuille d'Aventure";
+        // Title window
         titleWindow = subwin(actionChartWindow, ySizeTitle, xSizeTitle, yBloc * 0.75, COLS / 2 - (strlen(title) / 2));
         wattron(titleWindow, A_UNDERLINE);
         mvwprintw(titleWindow, 0, 0, title);
         wattroff(titleWindow, A_UNDERLINE);
 
-        //Windows and sub-windows
+        //TODO : book = 
+        wattron(titleWindow, A_DIM);
+        mvwprintw(titleWindow, 0, 7 * xBloc, books[book]);
+        wattroff(titleWindow, A_DIM);
+
+        //Display all other windows
         wattron(actionChartWindow, A_BOLD);
         kaiDisciplinesWindow = subwin(actionChartWindow, ySizeDisciplines, xSizeDisciplines, yPositionDisciplines, xPositionDisciplines);
         for (i = 0 ; i < 10 ; i++) {
@@ -162,7 +174,6 @@ void actionChart(WINDOW *actionChartWindow) {
 
         wattroff(actionChartWindow, A_BOLD);
 
-
         char options[] = "Options :\t q : quitter\t s : sauvegarder\t l : charger\t b : s\u00E9lectionner le livre\td : table de hasard\tf : combat";
         // The - 12 on ySize is for the 6 \t in options[]
         mvwprintw(actionChartWindow, yBloc * 13, (COLS / 2) - (strlen(options) / 2) - 12, options);
@@ -180,7 +191,6 @@ void actionChart(WINDOW *actionChartWindow) {
                 } else if (highlight == MEAL) {
                     highlight = GOLD;
                 }
-                    
             break;
 
             case KEY_DOWN:
@@ -229,8 +239,17 @@ void actionChart(WINDOW *actionChartWindow) {
 
                 
             //Then the options
-            case 113:
+            case 'q':
                 goOn = 0;
+            break;
+            case 'Q':
+                goOn = 0;
+            break;
+            case 'b' : 
+                book = bookChoice();
+            break;
+            case 'B' : 
+                book = bookChoice();
             break;
         }
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleEndurance, xTitleEndurance, PE);
