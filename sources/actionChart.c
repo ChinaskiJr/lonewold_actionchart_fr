@@ -10,6 +10,8 @@
 #include <string.h>
 #include <ncursesw/curses.h>
 #include <wchar.h>
+#include <time.h>
+
 
 #include "../headers/menu.h"
 #include "../headers/constants.h"
@@ -17,11 +19,14 @@
 
 void actionChart(WINDOW *actionChartWindow) {
 
+    srand(time(NULL));
+
     int         goOn = 1;
     int         wgetChoice = 0;
     int         i = 0;
     int         highlight = 0;
     int         book = 0;
+    int         randomNumberTable = 0;
 
     WINDOW      *titleWindow = NULL;
     WINDOW      *kaiDisciplinesWindow = NULL;
@@ -38,6 +43,8 @@ void actionChart(WINDOW *actionChartWindow) {
 
     WINDOW      *bookWindow = NULL;
 
+    char title[] = "Feuille d'Aventure";
+    char randomTable[] = "Table de hasard : ";
 
     char *actionChartMenu[] = {
         "Disciplines Ka\u00EF",
@@ -49,8 +56,6 @@ void actionChart(WINDOW *actionChartWindow) {
         "Objets sp\u00E9ciaux",
     };
     int numberChoices = sizeof(actionChartMenu) / sizeof(char *);
-
-    char title[] = "Feuille d'Aventure";
 
     char *books[] = {
         "Tome 1 - Les ma\u00EEtre des t\u00E9n\u00E8bres",
@@ -117,6 +122,9 @@ void actionChart(WINDOW *actionChartWindow) {
         float       xTitleSpecialItems = (xSizeSpecialItems / 2) - (strlen(actionChartMenu[SPECITS]) / 2) + xPositionSpecialItems + 1;
         float       yTitleSpecialItems = yPositionSpecialItems - 0.25;
 
+        int         xPositionRandomTable = xBloc * 13.5;
+        int         yPositionRandomTable = yBloc * 8;
+
         // Display line buffering
         noecho();
         cbreak();
@@ -176,6 +184,10 @@ void actionChart(WINDOW *actionChartWindow) {
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleSpecialItems, xTitleSpecialItems, SPECITS);
 
         wattroff(actionChartWindow, A_BOLD);
+
+        // Display random number table
+        mvwprintw(actionChartWindow, yPositionRandomTable, xPositionRandomTable, randomTable);
+        mvwprintw(actionChartWindow, yPositionRandomTable + 1, xPositionRandomTable + strlen(randomTable) / 2 - 1, "%d", randomNumberTable);
 
         char options[] = "Options :\t q : quitter\t s : sauvegarder\t l : charger\t b : s\u00E9lectionner le livre\td : table de hasard\tf : combat";
         // The - 12 on ySize is for the 6 \t in options[]
@@ -254,6 +266,11 @@ void actionChart(WINDOW *actionChartWindow) {
             case 'B' : 
                 book = bookChoice(actionChartWindow);
             break;
+            case 'd' :
+                randomNumberTable = rand() % 10;
+            break;  
+            case 'D' :
+                randomNumberTable = rand() % 10;      
         }
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleEndurance, xTitleEndurance, PE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleCombatSkill, xTitleCombatSkill, CS);
