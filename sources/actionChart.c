@@ -36,6 +36,9 @@ void actionChart(WINDOW *actionChartWindow) {
     WINDOW      *backpackWindows[7] = {0};
     WINDOW      *specialItemsWindows[1] = {0};
 
+    WINDOW      *bookWindow = NULL;
+
+
     char *actionChartMenu[] = {
         "Disciplines Ka\u00EF",
         "Points d'endurance",
@@ -246,10 +249,10 @@ void actionChart(WINDOW *actionChartWindow) {
                 goOn = 0;
             break;
             case 'b' : 
-                book = bookChoice();
+                book = bookChoice(actionChartWindow);
             break;
             case 'B' : 
-                book = bookChoice();
+                book = bookChoice(actionChartWindow);
             break;
         }
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleEndurance, xTitleEndurance, PE);

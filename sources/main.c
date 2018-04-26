@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
         // display arrays
         refresh();
         display_logo(menuWindow, logo, xLogo, yLogo, sizeLogoArray);
-        display_main_menu(menuWindow, highlight, choices, xChoices, yChoices, numberChoices);
+        display_vertical_menu(menuWindow, highlight, choices, xChoices, yChoices, numberChoices);
 
         // Highlight selector for choices[]
         keypad(menuWindow, TRUE);
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
                 choice = highlight;
             break;
         }
-        display_main_menu(menuWindow, highlight, choices, xChoices, yChoices, numberChoices);
+        display_vertical_menu(menuWindow, highlight, choices, xChoices, yChoices, numberChoices);
         refresh();
 
         // Lead the way

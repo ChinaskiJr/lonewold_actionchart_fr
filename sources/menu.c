@@ -23,7 +23,7 @@ void display_logo(WINDOW *window, char *logoToDisplay[], int x, int y, int size)
     wrefresh(window);
 }
 
-void display_main_menu(WINDOW *menuWindow, int highlight, char *menuToDisplay[], int x, int y, int n_choices) {
+void display_vertical_menu(WINDOW *menuWindow, int highlight, char *menuToDisplay[], int x, int y, int n_choices) {
     
     int i = 0;
 

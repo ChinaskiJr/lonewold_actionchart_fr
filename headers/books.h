@@ -9,6 +9,6 @@
 #ifndef DEF_BOOKS
 #define DEF_BOOKS
 
-int bookChoice();
+int bookChoice(WINDOW *bookWindow);
 
 #endif
