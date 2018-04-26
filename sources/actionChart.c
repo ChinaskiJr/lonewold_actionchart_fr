@@ -12,10 +12,10 @@
 #include <wchar.h>
 #include <time.h>
 
-
 #include "../headers/menu.h"
 #include "../headers/constants.h"
 #include "../headers/books.h"
+#include "../headers/actionChart.h"
 
 void actionChart(WINDOW *actionChartWindow) {
 
@@ -27,6 +27,14 @@ void actionChart(WINDOW *actionChartWindow) {
     int         highlight = 0;
     int         book = 0;
     int         randomNumberTable = 0;
+
+    // Initialisation of the carachter
+    Personnage player;
+    player.endurance = 20 + rand() % 10 ;
+    player.combatSkill = 10 + rand() %  10;
+    player.gold = rand() % 10;
+    player.meal = 0;
+
 
     WINDOW      *titleWindow = NULL;
     WINDOW      *kaiDisciplinesWindow = NULL;
@@ -77,15 +85,15 @@ void actionChart(WINDOW *actionChartWindow) {
         int         xSizeDisciplines = 6 * xBloc;
         int         ySizeDisciplines = 10 * yBloc;
         int         xSizeEndurance = 3 * xBloc;
-        int         ySizeEndurance = 1.5 * yBloc;
+        int         ySizeEndurance = 1.75 * yBloc;
         int         xSizeCombatSkill = 3 * xBloc;
-        int         ySizeCombatSkill = 1.5 * yBloc;
+        int         ySizeCombatSkill = 1.75 * yBloc;
         int         xSizeBackpack = 3 * xBloc;
         int         ySizeBackpack = 8 * yBloc;
         int         xSizeGold = 3 * xBloc;
-        int         ySizeGold = 1.5 * yBloc;
+        int         ySizeGold = 1.75 * yBloc;
         int         xSizeMeal = 3 * xBloc;
-        int         ySizeMeal = 1.5 * yBloc;
+        int         ySizeMeal = 1.75 * yBloc;
         int         xSizeSpecialItems = 8 * xBloc;
         int         ySizeSpecialItems = 10 * yBloc;
 
@@ -185,9 +193,17 @@ void actionChart(WINDOW *actionChartWindow) {
 
         wattroff(actionChartWindow, A_BOLD);
 
+        // Display player's attributes
+        mvwprintw(countEndurantWindow, ySizeEndurance / 2, xSizeEndurance / 2, "%d", player.endurance);
+        mvwprintw(combatSkillWindow, ySizeCombatSkill / 2, xSizeCombatSkill / 2, "%d", player.combatSkill);
+        mvwprintw(goldWindow, ySizeGold / 2, xSizeGold / 2, "%d", player.gold);
+        mvwprintw(mealWindow, ySizeMeal / 2, xSizeMeal / 2, "%d", player.meal);
+
         // Display random number table
         mvwprintw(actionChartWindow, yPositionRandomTable, xPositionRandomTable, randomTable);
+        wattron(actionChartWindow, A_BOLD);
         mvwprintw(actionChartWindow, yPositionRandomTable + 1, xPositionRandomTable + strlen(randomTable) / 2 - 1, "%d", randomNumberTable);
+        wattroff(actionChartWindow, A_BOLD);
 
         char options[] = "Options :\t q : quitter\t s : sauvegarder\t l : charger\t b : s\u00E9lectionner le livre\td : table de hasard\tf : combat";
         // The - 12 on ySize is for the 6 \t in options[]

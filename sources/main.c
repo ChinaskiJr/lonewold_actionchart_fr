@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 
     WINDOW          *logoWindow = NULL;
     char            title[] = "Feuille d'aventure Loup Solitaire";
-    char            credits[] = "Cr\u00E9\u00E9 par ChinaskiJr - Licence CC - v0.03";
+    char            credits[] = "Cr\u00E9\u00E9 par ChinaskiJr - Licence CC - v0.04";
     
     char *logo[] = {
          " _                        ____        _ _ _        _          ",

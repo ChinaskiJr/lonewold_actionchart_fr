@@ -25,12 +25,14 @@ typedef struct Backpack BackpackItem;
 struct BackpackItem {
     int endurModBackpack;
     int combSkillModBackpack;
+    char name[];
 };
 
 typedef struct SpecialItem SpecialItem;
 struct SpecialItem {
     int endurModSpecIt;
     int CombSkillModSpecIt;
+    char name[];
 };
 void actionChart(WINDOW *actionChartWindow);
 
