@@ -9,7 +9,7 @@
 #ifndef DEF_CONSTANTS
 #define DEF_CONSTANTS
     // actionchart
-    enum {DISC, PE, CS, BACKPACK, GOLD, MEAL, SPECITS};
+    enum {DISC, PE, CS, BACKPACK, GOLD, MEAL, WEAPONS, SPECITS};
     // books
     enum {T1, T2, T3, T4, T5};
 #endif

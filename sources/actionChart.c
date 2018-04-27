@@ -43,10 +43,12 @@ void actionChart(WINDOW *actionChartWindow) {
     WINDOW      *backpackWindow = NULL;
     WINDOW      *goldWindow = NULL;
     WINDOW      *mealWindow = NULL;
+    WINDOW      *weaponsWindow = NULL;
     WINDOW      *specialItemsWindow = NULL;
 
     WINDOW      *kaiDisciplineWindows[9] = {0};
     WINDOW      *backpackWindows[7] = {0};
+    WINDOW      *weaponsWindows[1] = {0};
     WINDOW      *specialItemsWindows[1] = {0};
 
     WINDOW      *bookWindow = NULL;
@@ -61,6 +63,7 @@ void actionChart(WINDOW *actionChartWindow) {
         "Sac \u00E0 Dos",
         "Couronnes",
         "Repas",
+        "Armes",
         "Objets sp\u00E9ciaux",
     };
     int numberChoices = sizeof(actionChartMenu) / sizeof(char *);
@@ -94,6 +97,8 @@ void actionChart(WINDOW *actionChartWindow) {
         int         ySizeGold = 1.75 * yBloc;
         int         xSizeMeal = 3 * xBloc;
         int         ySizeMeal = 1.75 * yBloc;
+        int         xSizeWeapons = 3 * xBloc;
+        int         ySizeWeapons = 2.5 * yBloc;
         int         xSizeSpecialItems = 8 * xBloc;
         int         ySizeSpecialItems = 10 * yBloc;
 
@@ -110,6 +115,8 @@ void actionChart(WINDOW *actionChartWindow) {
         int         yPositionGold = yBloc * 4;
         int         xPositionMeal = xBloc * 13;
         int         yPositionMeal = yBloc * 6;
+        int         xPositionWeapons = xBloc * 13;
+        int         yPositionWeapons = yBloc * 8;
         int         xPositionSpecialItems = xBloc * 17;
         int         yPositionSpecialItems = yBloc * 2;
 
@@ -127,17 +134,19 @@ void actionChart(WINDOW *actionChartWindow) {
         float       yTitleGold = yPositionGold - 0.25;
         float       xTitleMeal = (xSizeMeal / 2) - (strlen(actionChartMenu[MEAL]) / 2) + xPositionMeal;
         float       yTitleMeal = yPositionMeal - 0.25;
+        float       xTitleWeapons = (xSizeWeapons / 2) - (strlen(actionChartMenu[WEAPONS]) / 2) + xPositionWeapons;
+        float       yTitleWeapons = yPositionWeapons - 0.25;
         float       xTitleSpecialItems = (xSizeSpecialItems / 2) - (strlen(actionChartMenu[SPECITS]) / 2) + xPositionSpecialItems + 1;
         float       yTitleSpecialItems = yPositionSpecialItems - 0.25;
 
         int         xPositionRandomTable = xBloc * 13.5;
-        int         yPositionRandomTable = yBloc * 8;
+        int         yPositionRandomTable = yBloc * 10.5;
 
         // Display line buffering
         noecho();
         cbreak();
         clear();
-        // Main window
+        // Main windowweaponsWindow
         actionChartWindow = subwin(stdscr, LINES, COLS, 0, 0);
         box(actionChartWindow, ACS_VLINE, ACS_HLINE);
         // Title window
@@ -187,6 +196,13 @@ void actionChart(WINDOW *actionChartWindow) {
         box(mealWindow, ACS_VLINE, ACS_HLINE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleMeal, xTitleMeal, MEAL);
 
+        weaponsWindow = subwin(actionChartWindow, ySizeWeapons, xSizeWeapons, yPositionWeapons, xPositionWeapons);
+        for (i = 0 ; i < 2 ; i ++) {
+            weaponsWindows[i] = subwin(weaponsWindow, yBloc, xSizeWeapons, yPositionWeapons + (yBloc * i), xPositionWeapons);
+            box(weaponsWindows[i], ACS_VLINE, ACS_HLINE);
+        }
+        display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleWeapons, xTitleWeapons, WEAPONS);
+
         specialItemsWindow = subwin(actionChartWindow, ySizeSpecialItems, xSizeSpecialItems, yPositionSpecialItems, xPositionSpecialItems);
         box(specialItemsWindow, ACS_VLINE, ACS_HLINE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleSpecialItems, xTitleSpecialItems, SPECITS);
@@ -221,6 +237,8 @@ void actionChart(WINDOW *actionChartWindow) {
                     highlight = CS;
                 } else if (highlight == MEAL) {
                     highlight = GOLD;
+                } else if (highlight == WEAPONS) {
+                	highlight = MEAL;
                 }
             break;
 
@@ -231,6 +249,8 @@ void actionChart(WINDOW *actionChartWindow) {
                     highlight = GOLD;
                 } else if (highlight == GOLD) {
                     highlight = MEAL;
+                } else if (highlight == MEAL) {
+                	highlight = WEAPONS;
                 }
             break;
 
@@ -247,6 +267,8 @@ void actionChart(WINDOW *actionChartWindow) {
                     highlight = BACKPACK;
                 } else if (highlight == BACKPACK) {
                     highlight = DISC;
+                } else if (highlight == WEAPONS) {
+                	highlight = BACKPACK;
                 }
             break;
 
@@ -260,14 +282,13 @@ void actionChart(WINDOW *actionChartWindow) {
                 } else if (highlight == BACKPACK) {
                     highlight = GOLD;
                 } else if (highlight == GOLD) {
-                    highlight == SPECITS;
+                    highlight = SPECITS;
                 } else if (highlight == MEAL) {
                     highlight = SPECITS;
+                } else if (highlight == WEAPONS) {
+                	highlight = SPECITS;
                 }
             break;
-
-            display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleDisciplines, xTitleDisciplines, DISC);
-
                 
             //Then the options
             case 'q':
@@ -288,11 +309,13 @@ void actionChart(WINDOW *actionChartWindow) {
             case 'D' :
                 randomNumberTable = rand() % 10;      
         }
+        display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleDisciplines, xTitleDisciplines, DISC);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleEndurance, xTitleEndurance, PE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleCombatSkill, xTitleCombatSkill, CS);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleBackpack, xTitleBackpack, BACKPACK);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleGold, xTitleGold, GOLD);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleMeal, xTitleMeal, MEAL);
+        display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleWeapons, xTitleWeapons, WEAPONS);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleSpecialItems, xTitleSpecialItems, SPECITS);
         refresh();
     }
