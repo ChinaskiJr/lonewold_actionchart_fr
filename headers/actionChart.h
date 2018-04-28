@@ -15,6 +15,8 @@ struct Personnage {
     int combatSkill;
     int gold;
     int meal;
+    int weapon1;
+    int weapon2;
 
     char disciplines[10];
     char backpack[200];

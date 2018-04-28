@@ -15,6 +15,7 @@
 #include "../headers/menu.h"
 #include "../headers/constants.h"
 #include "../headers/books.h"
+#include "../headers/weapons.h"
 #include "../headers/actionChart.h"
 
 void actionChart(WINDOW *actionChartWindow) {
@@ -22,6 +23,7 @@ void actionChart(WINDOW *actionChartWindow) {
     srand(time(NULL));
 
     int         goOn = 1;
+    int 		choice = 0;
     int         wgetChoice = 0;
     int         i = 0;
     int         highlight = 0;
@@ -34,6 +36,8 @@ void actionChart(WINDOW *actionChartWindow) {
     player.combatSkill = 10 + rand() %  10;
     player.gold = rand() % 10;
     player.meal = 0;
+    player.weapon1 = AXE;
+    player.weapon2 = 0;
 
 
     WINDOW      *titleWindow = NULL;
@@ -48,7 +52,7 @@ void actionChart(WINDOW *actionChartWindow) {
 
     WINDOW      *kaiDisciplineWindows[9] = {0};
     WINDOW      *backpackWindows[7] = {0};
-    WINDOW      *weaponsWindows[1] = {0};
+    WINDOW      *weaponWindows[1] = {0};
     WINDOW      *specialItemsWindows[1] = {0};
 
     WINDOW      *bookWindow = NULL;
@@ -67,6 +71,19 @@ void actionChart(WINDOW *actionChartWindow) {
         "Objets sp\u00E9ciaux",
     };
     int numberChoices = sizeof(actionChartMenu) / sizeof(char *);
+
+   	char *weapons[] = {
+   		"Aucune",
+    	"Dague",
+    	"Lance",
+    	"\u00C9p\u00E9e courte",
+    	"Marteau de guerre",
+    	"Hache",
+    	"\u00C9p\u00E9e",
+    	"B\u00E2ton",
+    	"Glaive",
+    	"Autre",
+	}; 
 
     char *books[] = {
         "Tome 1 - Les ma\u00EEtre des t\u00E9n\u00E8bres",
@@ -198,8 +215,8 @@ void actionChart(WINDOW *actionChartWindow) {
 
         weaponsWindow = subwin(actionChartWindow, ySizeWeapons, xSizeWeapons, yPositionWeapons, xPositionWeapons);
         for (i = 0 ; i < 2 ; i ++) {
-            weaponsWindows[i] = subwin(weaponsWindow, yBloc, xSizeWeapons, yPositionWeapons + (yBloc * i), xPositionWeapons);
-            box(weaponsWindows[i], ACS_VLINE, ACS_HLINE);
+            weaponWindows[i] = subwin(weaponsWindow, yBloc, xSizeWeapons, yPositionWeapons + (yBloc * i), xPositionWeapons);
+            box(weaponWindows[i], ACS_VLINE, ACS_HLINE);
         }
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleWeapons, xTitleWeapons, WEAPONS);
 
@@ -214,6 +231,8 @@ void actionChart(WINDOW *actionChartWindow) {
         mvwprintw(combatSkillWindow, ySizeCombatSkill / 2, xSizeCombatSkill / 2, "%d", player.combatSkill);
         mvwprintw(goldWindow, ySizeGold / 2, xSizeGold / 2, "%d", player.gold);
         mvwprintw(mealWindow, ySizeMeal / 2, xSizeMeal / 2, "%d", player.meal);
+        mvwprintw(weaponWindows[0], ySizeWeapons / 4, xSizeWeapons / 8, weapons[player.weapon1]);
+        mvwprintw(weaponWindows[1], ySizeWeapons / 4, xSizeWeapons / 8, weapons[player.weapon2]);
 
         // Display random number table
         mvwprintw(actionChartWindow, yPositionRandomTable, xPositionRandomTable, randomTable);
@@ -307,7 +326,10 @@ void actionChart(WINDOW *actionChartWindow) {
                 randomNumberTable = rand() % 10;
             break;  
             case 'D' :
-                randomNumberTable = rand() % 10;      
+                randomNumberTable = rand() % 10;   
+            break;
+            case 10:
+            	choice = highlight;
         }
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleDisciplines, xTitleDisciplines, DISC);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleEndurance, xTitleEndurance, PE);
@@ -318,6 +340,13 @@ void actionChart(WINDOW *actionChartWindow) {
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleWeapons, xTitleWeapons, WEAPONS);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleSpecialItems, xTitleSpecialItems, SPECITS);
         refresh();
+
+        switch (choice) {
+        	case WEAPONS:
+        		weaponNumberChoice(actionChartWindow, &player.weapon1, &player.weapon2);
+        		choice = 0;
+        	break;
+        }
     }
     refresh();
     delwin(titleWindow);
