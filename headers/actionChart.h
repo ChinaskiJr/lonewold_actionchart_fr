@@ -12,12 +12,16 @@
 typedef struct Personnage Personnage;
 struct Personnage {
     int endurance;
+    int currentEndurance;
     int combatSkill;
+    int currentCombatSkill;
     int gold;
     int meal;
     int weapon1;
     int weapon2;
 
+    char customWeapon1[20];
+    char customWeapon2[20];
     char disciplines[10];
     char backpack[200];
     char specialItems[200];

@@ -11,6 +11,7 @@
 #include <ncursesw/curses.h>
 #include <wchar.h>
 #include <time.h>
+#include <ctype.h>
 
 #include "../headers/menu.h"
 #include "../headers/constants.h"
@@ -30,15 +31,19 @@ void actionChart(WINDOW *actionChartWindow) {
     int         book = 0;
     int         randomNumberTable = 0;
 
+    // Booleans
+    int noWeapon = 0;
+
     // Initialisation of the carachter
     Personnage player;
     player.endurance = 20 + rand() % 10 ;
+    player.currentEndurance = player.endurance;
     player.combatSkill = 10 + rand() %  10;
+    player.currentCombatSkill = player.combatSkill;
     player.gold = rand() % 10;
     player.meal = 0;
     player.weapon1 = AXE;
     player.weapon2 = 0;
-
 
     WINDOW      *titleWindow = NULL;
     WINDOW      *kaiDisciplinesWindow = NULL;
@@ -89,8 +94,8 @@ void actionChart(WINDOW *actionChartWindow) {
         "Tome 1 - Les ma\u00EEtre des t\u00E9n\u00E8bres",
         "Tome 2 - La travers\u00E9e infernale",
         "Tome 3 - Les grottes de Kalte",
-        "tome 4 - Le gouffre maudit",
-        "tome 5 - Le tyran du d\u00E8sert",
+        "Tome 4 - Le gouffre maudit",
+        "Tome 5 - Le tyran du d\u00E8sert",
     };
 
     while (goOn) {
@@ -137,7 +142,6 @@ void actionChart(WINDOW *actionChartWindow) {
         int         xPositionSpecialItems = xBloc * 17;
         int         yPositionSpecialItems = yBloc * 2;
 
-
         // Titles position (+1 because of strlen that count \u for 2)
         float       xTitleDisciplines = (xSizeDisciplines / 2) - (strlen(actionChartMenu[DISC]) / 2) + xPositionDisciplines + 1;
         float       yTitleDisciplines = yPositionDisciplines - 0.25;
@@ -157,7 +161,22 @@ void actionChart(WINDOW *actionChartWindow) {
         float       yTitleSpecialItems = yPositionSpecialItems - 0.25;
 
         int         xPositionRandomTable = xBloc * 13.5;
-        int         yPositionRandomTable = yBloc * 10.5;
+        int         yPositionRandomTable = yBloc * 10.5;	
+
+        // Applies malus/bonus
+
+        if (!noWeapon) {
+	        if (player.weapon1 == NONE && player.weapon2 == NONE) {
+	        	player.currentCombatSkill = player.combatSkill - 4;
+	        	noWeapon = 1;
+	        }
+    	}
+    	if (noWeapon) {
+    		if (!player.weapon1 == NONE || !player.weapon2 == NONE) {
+    			player.currentCombatSkill = player.combatSkill;
+    			noWeapon = 0;
+    		}
+    	}
 
         // Display line buffering
         noecho();
@@ -227,8 +246,8 @@ void actionChart(WINDOW *actionChartWindow) {
         wattroff(actionChartWindow, A_BOLD);
 
         // Display player's attributes
-        mvwprintw(countEndurantWindow, ySizeEndurance / 2, xSizeEndurance / 2, "%d", player.endurance);
-        mvwprintw(combatSkillWindow, ySizeCombatSkill / 2, xSizeCombatSkill / 2, "%d", player.combatSkill);
+        mvwprintw(countEndurantWindow, ySizeEndurance / 2, xSizeEndurance / 2, "%d", player.currentEndurance);
+        mvwprintw(combatSkillWindow, ySizeCombatSkill / 2, xSizeCombatSkill / 2, "%d", player.currentCombatSkill);
         mvwprintw(goldWindow, ySizeGold / 2, xSizeGold / 2, "%d", player.gold);
         mvwprintw(mealWindow, ySizeMeal / 2, xSizeMeal / 2, "%d", player.meal);
         mvwprintw(weaponWindows[0], ySizeWeapons / 4, xSizeWeapons / 8, weapons[player.weapon1]);
@@ -240,14 +259,17 @@ void actionChart(WINDOW *actionChartWindow) {
         mvwprintw(actionChartWindow, yPositionRandomTable + 1, xPositionRandomTable + strlen(randomTable) / 2 - 1, "%d", randomNumberTable);
         wattroff(actionChartWindow, A_BOLD);
 
-        char options[] = "Options :\t q : quitter\t s : sauvegarder\t l : charger\t b : s\u00E9lectionner le livre\td : table de hasard\tf : combat";
+        // Display control list
+        char statsUpandDown [] = "j/k : -/+ endurance\tl : réinitialiser l'endurance (conserve bonus/malus)\tu/i : -/+ habileté\to : réinitialiser l'habileté (conserve bonus/malus)";
+        char options[] = "Options :\tq : quitter\t s : sauvegarder\t l : charger\t b : s\u00E9lectionner le livre\td : table de hasard\tf : combat";
         // The - 12 on ySize is for the 6 \t in options[]
-        mvwprintw(actionChartWindow, yBloc * 13, (COLS / 2) - (strlen(options) / 2) - 12, options);
+        mvwprintw(actionChartWindow, yBloc * 13, (COLS / 2) - (strlen(statsUpandDown) / 2), statsUpandDown);
+        mvwprintw(actionChartWindow, yBloc * 14, (COLS / 2) - (strlen(options) / 2) - 12, options);
 
         refresh();
         keypad(actionChartWindow, TRUE);
         wgetChoice = wgetch(actionChartWindow);
-        switch (wgetChoice) {
+        switch (toupper(wgetChoice)) {
             // First, the navigation
             case KEY_UP:
                 if (highlight == BACKPACK) {
@@ -309,28 +331,40 @@ void actionChart(WINDOW *actionChartWindow) {
                 }
             break;
                 
-            //Then the options
-            case 'q':
-                goOn = 0;
-            break;
+            //Then the options;
             case 'Q':
                 goOn = 0;
-            break;
-            case 'b' : 
-                book = bookChoice(actionChartWindow);
             break;
             case 'B' : 
                 book = bookChoice(actionChartWindow);
             break;
-            case 'd' :
-                randomNumberTable = rand() % 10;
-            break;  
             case 'D' :
                 randomNumberTable = rand() % 10;   
+            break;
+            case 'J' : 
+            	player.currentEndurance--;
+            break;
+            case 'K' :
+            	player.currentEndurance++;
+            break;
+            case 'L' : 
+            	player.currentEndurance = player.endurance; 
+            case 'U' : 
+            	player.currentCombatSkill--;
+            break;
+            case 'I' : 
+            	player.currentCombatSkill++;
+            break;
+            case 'O' : 
+            	player.currentCombatSkill = player.combatSkill;
+            	if (noWeapon) {
+            		player.currentCombatSkill -= 4;
+            	}
             break;
             case 10:
             	choice = highlight;
         }
+
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleDisciplines, xTitleDisciplines, DISC);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleEndurance, xTitleEndurance, PE);
         display_menu_actionChart(actionChartWindow, highlight, actionChartMenu, yTitleCombatSkill, xTitleCombatSkill, CS);
