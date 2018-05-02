@@ -1,19 +1,21 @@
-/* main.c 
+/* weapons.c 
  * ------
  * By ChinaskiJr - April 2018
  * 
- * role : deal the weapons of the player
+ * role : display weapon's choices
  *
  */
 
 #include <stdlib.h>
 #include <ncursesw/curses.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "../headers/actionChart.h"
 #include "../headers/constants.h"
 #include "../headers/menu.h"
 #include "../headers/weapons.h"
+#include "../headers/disciplines.h"
 
 int weaponNumberChoice(WINDOW *numberWeaponChoiceWindow, int *weapon1, int *weapon2) {
 
@@ -29,7 +31,7 @@ int weaponNumberChoice(WINDOW *numberWeaponChoiceWindow, int *weapon1, int *weap
 		"Arme 2",
 	};
 	int sizeWeaponNumberArray = sizeof(weaponNumber) / sizeof(char *);
-	int xWeaponNumberMenu = COLS / 4 - strlen(weaponNumber[0]) / 2;
+	int xWeaponNumberMenu = 	COLS / 4 - strlen(weaponNumber[0]) / 2;
 	int yWeaponNumberMenu = LINES / 4 - sizeWeaponNumberArray;
 
 	while (goOn) {
@@ -73,18 +75,16 @@ int weaponNumberChoice(WINDOW *numberWeaponChoiceWindow, int *weapon1, int *weap
  		display_vertical_menu(numberWeaponChoiceWindow, highlight, weaponNumber, xWeaponNumberMenu, yWeaponNumberMenu, sizeWeaponNumberArray);
 	    refresh();
 	}
-	// 0 for weapon 1 ; 1 for weapon 2
 	if (weaponNumberChoice == 1) {
-		*weapon1 = weaponChoice(numberWeaponChoiceWindow, weaponNumberChoice);
-
+		*weapon1 = weaponChoice(numberWeaponChoiceWindow);
 	} else if (weaponNumberChoice == 2) {
-		*weapon2 = weaponChoice(numberWeaponChoiceWindow, weaponNumberChoice);
+		*weapon2 = weaponChoice(numberWeaponChoiceWindow);
 	}
 	delwin(numberWeaponChoiceWindow);
 	return 0;
 }
 
-int weaponChoice(WINDOW *weaponsChoiceWindow, int weaponNumber) {
+int weaponChoice(WINDOW *weaponsChoiceWindow) {
 	
 	int 		xBloc = COLS / 24;
 	int 		yBloc = LINES / 12;
@@ -103,11 +103,10 @@ int weaponChoice(WINDOW *weaponsChoiceWindow, int weaponNumber) {
     	"\u00C9p\u00E9e",
     	"B\u00E2ton",
     	"Glaive",
-    	"Autre",
 	};
 	int sizeWeaponsArray = sizeof(weapons) / sizeof(char *);
-	int xWeaponsMenu = COLS / 4 - strlen(weapons[0]) / 2;
-	int yWeaponsMenu = LINES / 4 - sizeWeaponsArray;
+	int xWeaponsMenu = COLS / 6 - strlen(weapons[3]) / 2;
+	int yWeaponsMenu = LINES * 0.35 - sizeWeaponsArray;
 
 	char choseWeapon[] = "S\u00E9lectionner votre arme :";
 
@@ -131,7 +130,7 @@ int weaponChoice(WINDOW *weaponsChoiceWindow, int weaponNumber) {
 		keypad(weaponsChoiceWindow, TRUE);
 		wgetChoice = wgetch(weaponsChoiceWindow);
 
-	    switch (wgetChoice) {
+	    switch (toupper(wgetChoice)) {
 	    	case KEY_UP:
 	    		if (highlight == 1)
 	    			highlight = sizeWeaponsArray;
@@ -146,9 +145,6 @@ int weaponChoice(WINDOW *weaponsChoiceWindow, int weaponNumber) {
 	    	break;
 	    	case 10:
 	    		weapon = highlight - 1;
-	    		goOn = 0;
-	    	break;
-	    	case 'q':
 	    		goOn = 0;
 	    	break;
 	    	case 'Q':

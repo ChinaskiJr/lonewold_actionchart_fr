@@ -10,12 +10,29 @@
 #define DEF_MENU
 
 // Display a ASCII logo
-void display_logo(WINDOW *window, char *logoToDisplay[], int x, int y, int size);
+void display_logo(
+	WINDOW *window,
+	char *logoToDisplay[],
+	int x, 
+	int y, 
+	int size);
 
 // Display classical vertical menus
-void display_vertical_menu(WINDOW *menuWindow, int highlight, char *menuToDisplay[], int x, int y, int n_choices);
+void display_vertical_menu(
+	WINDOW *menuWindow, 
+	int highlight, 
+	char *menuToDisplay[], 
+	int x, 
+	int y, 
+	int n_choices);
 
 // Display the selection in actionChart
-void display_menu_actionChart(WINDOW *actionChartWindow, int highlight, char *menu_actionChart[], int x, int y, int n_choices);
+void display_menu_actionChart(
+	WINDOW *actionChartWindow, 
+	int highlight, 
+	char *menu_actionChart[], 
+	int x, 
+	int y, 
+	int n_choices);
 
 #endif

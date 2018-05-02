@@ -19,10 +19,9 @@ struct Personnage {
     int meal;
     int weapon1;
     int weapon2;
+    int weaponSkill;
 
-    char customWeapon1[20];
-    char customWeapon2[20];
-    char disciplines[10];
+    int disciplines[20];
     char backpack[200];
     char specialItems[200];
 };

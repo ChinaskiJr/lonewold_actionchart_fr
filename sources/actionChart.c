@@ -1,4 +1,4 @@
-/* main.c 
+/* actionChart.c 
  * ------
  * By ChinaskiJr - April 2018
  * 
@@ -18,32 +18,24 @@
 #include "../headers/books.h"
 #include "../headers/weapons.h"
 #include "../headers/actionChart.h"
+#include "../headers/disciplines.h"
 
 void actionChart(WINDOW *actionChartWindow) {
 
     srand(time(NULL));
 
     int         goOn = 1;
-    int 		choice = 0;
+    int 		choice = 20;
     int         wgetChoice = 0;
     int         i = 0;
     int         highlight = 0;
-    int         book = 0;
+    int         book = T1;
     int         randomNumberTable = 0;
+    int         weaponSkill = rand() % 7 + 1;
 
     // Booleans
-    int noWeapon = 0;
-
-    // Initialisation of the carachter
-    Personnage player;
-    player.endurance = 20 + rand() % 10 ;
-    player.currentEndurance = player.endurance;
-    player.combatSkill = 10 + rand() %  10;
-    player.currentCombatSkill = player.combatSkill;
-    player.gold = rand() % 10;
-    player.meal = 0;
-    player.weapon1 = AXE;
-    player.weapon2 = 0;
+    int         noWeapon = 0;
+    int         hasWeaponSkill = 0;
 
     WINDOW      *titleWindow = NULL;
     WINDOW      *kaiDisciplinesWindow = NULL;
@@ -77,26 +69,61 @@ void actionChart(WINDOW *actionChartWindow) {
     };
     int numberChoices = sizeof(actionChartMenu) / sizeof(char *);
 
-   	char *weapons[] = {
-   		"Aucune",
-    	"Dague",
-    	"Lance",
-    	"\u00C9p\u00E9e courte",
-    	"Marteau de guerre",
-    	"Hache",
-    	"\u00C9p\u00E9e",
-    	"B\u00E2ton",
-    	"Glaive",
-    	"Autre",
-	}; 
+    char *weapons[] = {
+        "Aucune",
+        "Dague",
+        "Lance",
+        "\u00C9p\u00E9e courte",
+        "Marteau de guerre",
+        "Hache",
+        "\u00C9p\u00E9e",
+        "B\u00E2ton",
+        "Glaive",
+    }; 
+
+    char *disciplinesKai[] = {
+        "Camouflage",
+        "La chasse",
+        "Sixi\u00E8me sens",
+        "Orientation",
+        "Gu\u00E9rison",
+        "Ma\u00EEtrise des armes :",
+        "Bouclier psychique",
+        "Puissance psychique",
+        "Communication animale",
+        "Ma\u00EEtrise psychique de la mati\u00E8re",
+        "Aucune",
+        "Bloqu\u00E9",
+    };
+    char weaponSkillType[256] = "Ma\u00EEtrise des armes : ";
+    strcat (weaponSkillType, weapons[weaponSkill]);
+    strcat (weaponSkillType, " +2PH");
+    disciplinesKai[WEAPONSSKILL] = weaponSkillType;
 
     char *books[] = {
         "Tome 1 - Les ma\u00EEtre des t\u00E9n\u00E8bres",
         "Tome 2 - La travers\u00E9e infernale",
         "Tome 3 - Les grottes de Kalte",
-        "Tome 4 - Le gouffre maudit",
-        "Tome 5 - Le tyran du d\u00E8sert",
+        "Tome 4 - Le gouffer maudit",
+        "Tome 5 - Le tyran du d\u00E9sert",
     };
+
+    // Initialisation of the character
+    Personnage player;
+    player.endurance = 20 + rand() % 10 ;
+    player.currentEndurance = player.endurance;
+    player.combatSkill = 10 + rand() %  10;
+    player.currentCombatSkill = player.combatSkill;
+    player.gold = rand() % 10;
+    player.meal = 0;
+    player.weapon1 = AXE;
+    player.weapon2 = 0;
+    for (i = 0 ; i < 5 ; i++) {
+        player.disciplines[i] = NODISC;
+    }
+    for (i = 5 ; i < 10 ; i++) {
+        player.disciplines[i] = NOTAVAILABLE;
+    }
 
     while (goOn) {
         refresh();
@@ -164,20 +191,31 @@ void actionChart(WINDOW *actionChartWindow) {
         int         yPositionRandomTable = yBloc * 10.5;	
 
         // Applies malus/bonus
-
         if (!noWeapon) {
 	        if (player.weapon1 == NONE && player.weapon2 == NONE) {
-	        	player.currentCombatSkill = player.combatSkill - 4;
+	        	player.currentCombatSkill = player.currentCombatSkill - 4;
 	        	noWeapon = 1;
 	        }
     	}
     	if (noWeapon) {
     		if (!player.weapon1 == NONE || !player.weapon2 == NONE) {
-    			player.currentCombatSkill = player.combatSkill;
+    			player.currentCombatSkill = player.currentCombatSkill + 4;
     			noWeapon = 0;
     		}
     	}
-
+        if (!hasWeaponSkill) {
+            if (player.weapon1 == weaponSkill || player.weapon2 == weaponSkill) {
+                player.currentCombatSkill = player.currentCombatSkill + 2;
+                hasWeaponSkill = 1;
+            }
+        }
+        if (hasWeaponSkill) {
+            if (player.weapon1 != weaponSkill && player.weapon2 != weaponSkill) {
+                player.currentCombatSkill = player.currentCombatSkill - 2;
+                hasWeaponSkill = 0;
+            }
+        }
+       
         // Display line buffering
         noecho();
         cbreak();
@@ -250,6 +288,9 @@ void actionChart(WINDOW *actionChartWindow) {
         mvwprintw(combatSkillWindow, ySizeCombatSkill / 2, xSizeCombatSkill / 2, "%d", player.currentCombatSkill);
         mvwprintw(goldWindow, ySizeGold / 2, xSizeGold / 2, "%d", player.gold);
         mvwprintw(mealWindow, ySizeMeal / 2, xSizeMeal / 2, "%d", player.meal);
+        for (i = 0 ; i < 10 ; i++) {
+            mvwprintw(kaiDisciplineWindows[i], ySizeDisciplines / 20, xSizeDisciplines / 8, disciplinesKai[player.disciplines[i]]);
+        }
         mvwprintw(weaponWindows[0], ySizeWeapons / 4, xSizeWeapons / 8, weapons[player.weapon1]);
         mvwprintw(weaponWindows[1], ySizeWeapons / 4, xSizeWeapons / 8, weapons[player.weapon2]);
 
@@ -357,9 +398,8 @@ void actionChart(WINDOW *actionChartWindow) {
             break;
             case 'O' : 
             	player.currentCombatSkill = player.combatSkill;
-            	if (noWeapon) {
-            		player.currentCombatSkill -= 4;
-            	}
+                hasWeaponSkill = 0;
+                noWeapon = 0;
             break;
             case 10:
             	choice = highlight;
@@ -378,8 +418,12 @@ void actionChart(WINDOW *actionChartWindow) {
         switch (choice) {
         	case WEAPONS:
         		weaponNumberChoice(actionChartWindow, &player.weapon1, &player.weapon2);
-        		choice = 0;
+        		choice = -1;
         	break;
+            case DISC:
+                disciplineNumberChoice(actionChartWindow, player.disciplines, book);
+                choice = -1;
+            break;
         }
     }
     refresh();
