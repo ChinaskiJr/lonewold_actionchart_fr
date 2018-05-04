@@ -28,7 +28,7 @@ int bookChoice(WINDOW *bookWindow) {
         "Tome 2 - La travers\u00E9e infernale",
         "Tome 3 - Les grottes de Kalte",
         "tome 4 - Le gouffre maudit",
-        "tome 5 - Le tyran du d\u00E8sert",
+        "tome 5 - Le tyran du d\u00E9sert",
     };
     int sizeBooksArray = sizeof(books) / sizeof(char *);
 	int xBooksMenu = COLS / 4 - strlen(books[0]) / 2;
@@ -50,8 +50,8 @@ int bookChoice(WINDOW *bookWindow) {
 	    wattron(bookWindow, A_BOLD);
 	    mvwprintw(bookWindow, yBloc,COLS / 4 - strlen(choseBook) / 2, choseBook);
 	    wattroff(bookWindow, A_BOLD);
-		display_vertical_menu(bookWindow, highlight, books, xBooksMenu, yBooksMenu, sizeBooksArray);;
 
+		display_vertical_menu(bookWindow, highlight, books, xBooksMenu, yBooksMenu, sizeBooksArray);
 	    refresh();
 	    keypad(bookWindow, TRUE);
 	    wgetChoice = wgetch(bookWindow);
@@ -80,8 +80,9 @@ int bookChoice(WINDOW *bookWindow) {
 	    		goOn = 0;
 	    	break;
 	    }
-		display_vertical_menu(bookWindow, highlight, books, xBooksMenu, yBooksMenu, sizeBooksArray);;
+		display_vertical_menu(bookWindow, highlight, books, xBooksMenu, yBooksMenu, sizeBooksArray);
 	    refresh();
 	}
+	delwin(bookWindow);
     return book;
 }

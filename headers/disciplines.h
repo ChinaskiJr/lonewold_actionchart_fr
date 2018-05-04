@@ -12,9 +12,10 @@
 int disciplineNumberChoice(
 	WINDOW* disciplineNumberChoiceWindow, 
 	int *disciplines,
+    int *hasDisciplines,
     int book
 	);
 
-int choseKaiDisciplines(WINDOW* choseDisciplinesWindow);
+int choseKaiDisciplines(WINDOW* choseDisciplinesWindow, int *hasDisciplines);
 
 #endif

@@ -36,6 +36,7 @@ void actionChart(WINDOW *actionChartWindow) {
     // Booleans
     int         noWeapon = 0;
     int         hasWeaponSkill = 0;
+    int         hasDisciplines[20] = {0};
 
     WINDOW      *titleWindow = NULL;
     WINDOW      *kaiDisciplinesWindow = NULL;
@@ -289,7 +290,7 @@ void actionChart(WINDOW *actionChartWindow) {
         mvwprintw(goldWindow, ySizeGold / 2, xSizeGold / 2, "%d", player.gold);
         mvwprintw(mealWindow, ySizeMeal / 2, xSizeMeal / 2, "%d", player.meal);
         for (i = 0 ; i < 10 ; i++) {
-            mvwprintw(kaiDisciplineWindows[i], ySizeDisciplines / 20, xSizeDisciplines / 8, disciplinesKai[player.disciplines[i]]);
+            mvwprintw(kaiDisciplineWindows[i], ySizeDisciplines / 20, xSizeDisciplines / 10, disciplinesKai[player.disciplines[i]]);
         }
         mvwprintw(weaponWindows[0], ySizeWeapons / 4, xSizeWeapons / 8, weapons[player.weapon1]);
         mvwprintw(weaponWindows[1], ySizeWeapons / 4, xSizeWeapons / 8, weapons[player.weapon2]);
@@ -421,7 +422,7 @@ void actionChart(WINDOW *actionChartWindow) {
         		choice = -1;
         	break;
             case DISC:
-                disciplineNumberChoice(actionChartWindow, player.disciplines, book);
+                disciplineNumberChoice(actionChartWindow, player.disciplines, hasDisciplines, book);
                 choice = -1;
             break;
         }
